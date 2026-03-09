@@ -3,6 +3,7 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  imageUri?: string;
 }
 
 export interface Character {
@@ -19,6 +20,9 @@ export interface Character {
 export interface ChatSession {
   id: string;
   characterId: string;
-  messages: Message[];
-  createdAt: Date;
+  characterName: string;
+  characterAvatar: string;
+  lastMessage: string;
+  lastTimestamp: Date;
+  messageCount: number;
 }
