@@ -1,46 +1,60 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { CHARACTERS } from '../../constants/characters';
+import { CHARACTERS } from '../constants/characters';
+import CharacterCard from '../components/CharacterCard';
 
 export default function HomeScreen() {
   const router = useRouter();
-
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#0f0f1a' }}>
-      {/* Title */}
-      <View style={{ padding: 24, paddingTop: 60 }}>
-        <Text style={{ color: '#a78bfa', fontSize: 28, fontWeight: 'bold' }}>বলো তুমিও 💬</Text>
-        <Text style={{ color: '#666', marginTop: 4 }}>তোমার AI বন্ধু বেছে নাও</Text>
-      </View>
-
-      {/* Character Cards */}
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={CHARACTERS}
-        horizontal={false}
         keyExtractor={(c) => c.id}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => router.push(`/chat/${item.id}`)}
-            style={{
-              backgroundColor: '#1a1a2e', borderRadius: 20,
-              padding: 20, marginBottom: 16, flexDirection: 'row', alignItems: 'center',
-              borderWidth: 1, borderColor: '#2a2a4a',
-            }}
-          >
-            <Text style={{ fontSize: 48 }}>{item.avatar}</Text>
-            <View style={{ marginLeft: 16, flex: 1 }}>
-              <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>{item.banglaName}</Text>
-              <Text style={{ color: '#a78bfa', marginTop: 2 }}>{item.tags.join(' • ')}</Text>
-              <Text style={{ color: '#555', marginTop: 6, fontSize: 12 }}>
-                {item.gender === 'female' ? '👩 মেয়ে বন্ধু' : '👨 ছেলে বন্ধু'}
-              </Text>
+        contentContainerStyle={styles.list}
+        ListHeaderComponent={
+          <View>
+            <View style={styles.hero}>
+              <Text style={styles.heroEmoji}>🤖</Text>
+              <Text style={styles.heroTitle}>বলো তুমিও</Text>
+              <Text style={styles.heroSub}>তোমার AI বন্ধু বেছে নাও</Text>
+              <TouchableOpacity
+                style={styles.historyBtn}
+                onPress={() => router.push('/history' as any)}
+              >
+                <Text style={styles.historyBtnText}>📜 চ্যাট হিস্টোরি দেখো</Text>
+              </TouchableOpacity>
             </View>
-            <Text style={{ color: '#7c3aed', fontSize: 24 }}>›</Text>
-          </TouchableOpacity>
+            <Text style={styles.sectionTitle}>✨ সব চরিত্র</Text>
+          </View>
+        }
+        renderItem={({ item }) => (
+          <CharacterCard
+            character={item}
+            onPress={() => router.push(`/chat/${item.id}` as any)}
+          />
         )}
       />
-    </ScrollView>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#0a0a14' },
+  list: { paddingHorizontal: 16, paddingBottom: 32 },
+  hero: { alignItems: 'center', paddingVertical: 32, marginBottom: 8 },
+  heroEmoji: { fontSize: 56, marginBottom: 12 },
+  heroTitle: { color: '#c084fc', fontSize: 36, fontWeight: 'bold' },
+  heroSub: { color: '#666', fontSize: 15, marginTop: 6 },
+  historyBtn: {
+    marginTop: 20,
+    backgroundColor: '#1a1a2e',
+    borderRadius: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#c084fc',
+  },
+  historyBtnText: { color: '#c084fc', fontSize: 14, fontWeight: '600' },
+  sectionTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
+});
